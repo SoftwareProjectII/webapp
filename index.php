@@ -10,12 +10,12 @@
     <script type="text/javascript" src="js/script.js"></script>
     <!-- endbuild -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="shortcut icon" href="img/favicon.ico">
 </head>
 <body>
-    <?php
-       echo "<p>Hello world!</p>";
-       phpinfo();
-    ?>
+<form action="login.php" method="POST">
+    <label for="username">Username:</label><input type="text" name="username" id="username" required="required"/> <br/>
+    <label for="password">Password:</label><input type="password" name="password" id="password" required="required"/> <br/> <!-- TODO: hash password in javascrypt?-->
+    <input type="submit" value="Login"/>
+</form>
 </body>
 </html>
