@@ -6,11 +6,13 @@
      * Time: 16:55
      */
 
+    session_start();
 
-//    $username = $_POST["username"];
+    //$username = $_POST["username"];
+    //$password = $_POST["password"];
+    //testdata
     $username = "russellwhyte";
-    $password = $_POST["password"];
-
+    $password = "Russell";
 
     $url = "http://services.odata.org/V4/(S(idjblwsbvsvghxmo1fqouvau))/TripPinServiceRW/People('{$username}')";
     $ch = curl_init($url);
@@ -24,13 +26,31 @@
     }
 
     curl_close($ch);
-    $result = json_decode($jsonstring);
 
-    if ($result == false || $result == NULL) {
-        die('error: decode = false or null');
+    //catch username not in database
+    if ($jsonstring === "") {
+        Print '<script>alert("Username not found!");</script>';
+        Print '<script>window.location.assign("index.php");</script>';
     }
 
-    var_export($result);
+    $result = json_decode($jsonstring, true);
+
+    if ($result == false || $result == NULL) {
+        die('error: json_decode = false or null');
+    }
+
+    $pass = $result["FirstName"];
+
+    if ($pass == $password) {
+        echo 'login succesful';
+        $_SESSION['user'] = $username;
+        header("location: availableTraining.php");
+    } else {
+        Print '<script>alert("Incorrect password!");</script>';
+        Print '<script>window.location.assign("index.php");</script>';
+    }
+?>
+
 
 
 
