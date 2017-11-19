@@ -43,14 +43,18 @@ class Service
 
     public static function post($location, $curl_post_data) {
         $data = json_encode($curl_post_data);
+        var_dump($data);
         $url = "10.3.50.22/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        //curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
         $jsonstring = curl_exec($ch);
+
+        //TODO: catch http-codes
+        $info = curl_getinfo($ch);
+        //201: created, 409: conflict, 500: internal server error (bad data), 404: not found
 
         //catch request error
         if ($jsonstring === false) {
@@ -61,10 +65,9 @@ class Service
 
         curl_close($ch);
 
-
         //catch data not found
         if ($jsonstring === "") {
-            return false;
+            return $info["http_code"];
         }
 
         $result = json_decode($jsonstring, true);
