@@ -9,11 +9,11 @@
 class Service
 {
 
-    //makes GET request to dataservice.
+    //get data form dataservice
     //returns FALSE when empty object is retrieved (no data or wrong query)
     //returns data as php array
-    public static function Get($get) {
-        $url = "10.3.50.22/api/{$get}";
+    public static function get($location) {
+        $url = "10.3.50.22/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $jsonstring = curl_exec($ch);
@@ -27,15 +27,50 @@ class Service
 
         curl_close($ch);
 
-/*        //catch data not found
+        //catch data not found
         if ($jsonstring === "") {
             return false;
-        }*/
+        }
 
         $result = json_decode($jsonstring, true);
 
         if ($result == false || $result == NULL) {
-            die('error: json_decode = false or null');
+            die('error: json_decode = false or null' .var_dump($jsonstring));
+        }
+
+        return $result;
+    }
+
+    public static function post($location, $curl_post_data) {
+        $data = json_encode($curl_post_data);
+        $url = "10.3.50.22/api/{$location}";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        //curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
+        $jsonstring = curl_exec($ch);
+
+        //catch request error
+        if ($jsonstring === false) {
+            $info = curl_getinfo($ch);
+            curl_close($ch);
+            die('Error making post request. More info:' . var_export($info));
+        }
+
+        curl_close($ch);
+
+
+        //catch data not found
+        if ($jsonstring === "") {
+            return false;
+        }
+
+        $result = json_decode($jsonstring, true);
+
+        if ($result == false || $result == NULL) {
+            die('error: json_decode = false or null' .var_dump($jsonstring));
         }
 
         return $result;
