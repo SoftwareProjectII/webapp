@@ -32,6 +32,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
 
 ?>
 <body>
+<?php require_once 'templates/navigation.php';?>
 <section>
 <table style="width:100%;">
     <tr>

@@ -99,6 +99,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
 
 ?>
 <body>
+<?php require_once 'templates/navigation.php';?>
 <section>
     <?php if($TS["cancelled"] == 1) {
 
