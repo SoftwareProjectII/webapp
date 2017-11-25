@@ -1,4 +1,3 @@
-<body>
 <?php
 /**
  * Created by PhpStorm.
@@ -7,6 +6,7 @@
  * Time: 19:08
  */
 require_once "Service.php";
+require_once 'templates/head.php';
 
 session_start();
 
@@ -18,6 +18,7 @@ $_SESSION["userTrainingSessions"] = Service::get("users/44/trainingsessions");
 //$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["user"]["userId"]}/trainingsessions");
 
 //if sign in button pushed => compile data and post to dataservice
+//TODO: change to function like in trainingsessiondetail?
 if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
     $curl_post_data = [
         "userid" => $_SESSION["user"]["userId"],
@@ -30,6 +31,8 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
 }
 
 ?>
+<body>
+<section>
 <table style="width:100%;">
     <tr>
         <th>Training</th>
@@ -59,7 +62,8 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
 
     //iterate every trainingsession
     foreach ($_SESSION["allTrainingSessions"] as $key => $value) {
-            if(!checkForId($value["trainingSessionId"], $_SESSION["userTrainingSessions"])) {
+            // TODO: test value cancelled
+            if(!checkForId($value["trainingSessionId"], $_SESSION["userTrainingSessions"]) && $value["cancelled"] == 0) {
                 ?>
                 <tr class="trainingrow">
                     <td>
@@ -111,9 +115,9 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
                 </tr>
                 <?php
             };
-
     }
     ?>
 
 </table>
+</section>
 </body>

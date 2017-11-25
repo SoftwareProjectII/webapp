@@ -1,52 +1,55 @@
 <?php
-
     require_once "Service.php";
+    require_once 'templates/head.php';
 
-    if (session_id() == "") {
-        session_start();
-    }
+    session_start();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $email = $_POST["email"];
+        $username = $_POST["username"];
         $password = $_POST["password"];
-        // TODO: testdata
-        //$email = "3";
-        // $password = "test";
 
-        $user = Service::Get("users/{$email}");
+        //salt ophalen
+        $user = Service::get("users/{$username}");
+        $salt = $user["salt"];
+
+        $hashedpass = hash_pbkdf2( "SHA1", $user["username"], $salt, 1000, 32,true);
+        $encodedpass = base64_encode($hashedpass);
+
+        var_dump($encodedpass);
+        var_dump($user["password"]);
+
+        if($user["username"] == $encodedpass) {
+            echo 'succes';
+        }
 
         if ($user["password"]) {
             $pass = $user["password"];
         }
 
         if ($pass == $password) {
-            $_SESSION['user'] = $email;
+            $_SESSION[$user] = $user;
             header("location: AvailableTraining.php");
             exit();
         }
-
     }
 ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-	<title></title>
-	<meta charset="utf-8">
-    <!-- build:css css/style.min.css -->
-	<link rel="stylesheet" href="css/style.css" type="text/css">
-    <!-- endbuild -->
-    <!-- build:js js/main.min.js -->
-    <script type="text/javascript" src="js/script.js"></script>
-    <!-- endbuild -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
 <body>
-
-<form action="index.php" method="POST">
-    <label for="email">Email:</label><input type="text" name="email" id="email" required="required"/> <br/>
-    <label for="password">Password:</label><input type="password" name="password" id="password" required="required"/> <br/> <!-- TODO: hash password in javascrypt?-->
-    <?php if (isset($_POST["password"]) && $pass !== $password) {echo 'incorrect email or password';}?><br/>
-    <input type="submit" value="Login"/>
-</form>
+<div class="login-clean">
+    <form method="POST">
+        <h2 class="sr-only">Login Form</h2>
+        <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password" required> <!-- TODO: hash password in javascrypt?-->
+        </div>
+        <?php if (isset($_POST["password"]) && $pass !== $password) {echo 'incorrect email or password';}?><br/>
+        <div class="form-group">
+            <input class="btn btn-primary btn-block nomargin" type="submit" value="login"/>
+        </div>
+        <!-- <a href="#" class="forgot">Forgot your email or password?</a> -->
+    </form>
+</div>
 </body>
 </html>

@@ -1,0 +1,38 @@
+body {
+  background:#f1f7fc;
+}
+
+fieldset {
+  background:#fff;
+  border:5px solid #f7f9fc;
+  border-radius:10px;
+  margin-top:20px;
+  padding:10px;
+}
+
+legend {
+  background:#f1f7fc;
+  border:5px solid #fff;
+  border-radius:5px;
+  padding:10px 20px;
+  text-align:left;
+  padding:10px;
+}
+
+.form-control.formbackground {
+  background:#f1f7fc;
+}
+
+.btn.btn-primary {
+  margin:10px;
+}
+
+.trainingsinfoborder {
+  border:1px solid #dfe7f1;
+  padding:10px;
+}
+
+.btn.btn-primary.btn-block.nomargin {
+  margin:0px;
+}
+

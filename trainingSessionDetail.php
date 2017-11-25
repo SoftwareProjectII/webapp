@@ -1,5 +1,5 @@
-<body>
 <?php
+
 /**
  * Created by PhpStorm.
  * User: driesc
@@ -7,6 +7,7 @@
  * Time: 21:39
  */
 require_once "Service.php";
+require_once 'templates/head.php';
 
 session_start();
 
@@ -97,6 +98,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
 }
 
 ?>
+<body>
 <section>
     <?php if($TS["cancelled"] == 1) {
 
@@ -219,6 +221,5 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
     &q=<?= urlencode($address["country"]) . "+" . urlencode($address["locality"]) . "+" . urlencode($address["streetaddress"]);
             ?>">
     </iframe>
-</section>
 </section>
 </body>
