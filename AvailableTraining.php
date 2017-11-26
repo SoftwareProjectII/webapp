@@ -33,92 +33,104 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
 ?>
 <body>
 <?php require_once 'templates/navigation.php';?>
-<section>
-<table style="width:100%;">
-    <tr>
-        <th>Training</th>
-        <th>City</th>
-        <th>Date</th>
-        <th>Hour</th>
-        <th></th>
-        <th></th>
-    </tr>
-    <?php
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div>
+                    <table class="table table-responsive table-hover">
+                        <thead>
+                        <tr>
+                            <th>Training</th>
+                            <th>City </th>
+                            <th>Date </th>
+                            <th>Hour </th>
+                            <th> </th>
+                            <th> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
 
-    // checkforid(int id, array to look in): returns false if no match found
-    function checkForId($TSId, $array) {
-        $t = 0;
-        foreach ($array as $key => $value) {
-            if ($TSId == $value["trainingSessionId"]) {
-                $t++;
-            }
-        }
+                        // checkforid(int id, array to look in): returns false if no match found
+                        // checks if user already signed in training so they don't appear in list
+                        function checkForId($TSId, $array) {
+                            $t = 0;
+                            foreach ($array as $key => $value) {
+                                if ($TSId == $value["trainingSessionId"]) {
+                                    $t++;
+                                }
+                            }
 
-        if ($t == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+                            if ($t == 0) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
 
-    //iterate every trainingsession
-    foreach ($_SESSION["allTrainingSessions"] as $key => $value) {
-            // TODO: test value cancelled
-            if(!checkForId($value["trainingSessionId"], $_SESSION["userTrainingSessions"]) && $value["cancelled"] == 0) {
-                ?>
-                <tr class="trainingrow">
-                    <td>
-                        <h3> <?=
-                            // gebruik voor meer performantie
-                            // $value["training"]["name"];
-                            Service::get("traininginfos/{$value["trainingId"]}")['name'];
-                            ?>
-                        </h3>
-                    </td>
-                    <td>
-                        <p>
-                            <?= Service::get("addresses/{$value["addressId"]}")['locality'] ?>
-                        </p>
-                    </td>
-                    <td>
-                        <p>
-                            <?php
-                            $date = new DateTime($value["date"]);
-                            echo $date->format('d M Y');
-                            ?>
-                        </p>
-                    </td>
-                    <td>
-                        <p>
-                            <?php
-                            $start = new DateTime($value["startHour"]);
-                            $end = new DateTime($value["endHour"]);
-                            echo $start->format('H:i') . ' - ' . $end->format('H:i');
-                            ?>
-                        </p>
-                    </td>
-                    <td>
-                        <form action="trainingSessionDetail.php">
-                            <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
-                            <button name="sign in">
-                                More info
-                            </button>
-                        </form>
-                    </td>
-                    <td>
-                        <form>
-                            <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
-                            <button name="sign in">
-                                Sign in
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                <?php
-            };
-    }
-    ?>
-
-</table>
-</section>
+                        //iterate every trainingsession
+                        foreach ($_SESSION["allTrainingSessions"] as $key => $value) {
+                            // TODO: test value cancelled
+                            if(!checkForId($value["trainingSessionId"], $_SESSION["userTrainingSessions"]) && $value["cancelled"] == 0) {
+                                ?>
+                                <tr class="trainingrow">
+                                    <td>
+                                        <h3> <?=
+                                            // gebruik voor meer performantie
+                                            // $value["training"]["name"];
+                                            Service::get("traininginfos/{$value["trainingId"]}")['name'];
+                                            ?>
+                                        </h3>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <?= Service::get("addresses/{$value["addressId"]}")['locality'] ?>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <?php
+                                            $date = new DateTime($value["date"]);
+                                            echo $date->format('d M Y');
+                                            ?>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            <?php
+                                            $start = new DateTime($value["startHour"]);
+                                            $end = new DateTime($value["endHour"]);
+                                            echo $start->format('H:i') . ' - ' . $end->format('H:i');
+                                            ?>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <form action="trainingSessionDetail.php">
+                                            <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
+                                            <button class="btn btn-primary" name="sign in">
+                                                More info
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form>
+                                            <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
+                                            <button class="btn btn-primary"name="sign in">
+                                                Sign in
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php
+                            };
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
