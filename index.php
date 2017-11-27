@@ -10,6 +10,8 @@
 
         //salt ophalen
         $user = Service::get("users/{$username}");
+        var_dump($user);
+
         $salt = $user["salt"];
         $encsalt = base64_decode($salt);
 
@@ -39,7 +41,7 @@
         <div class="form-group">
             <input class="form-control" type="password" name="password" placeholder="Password" required> <!-- TODO: hash password in javascrypt?-->
         </div>
-        <?php if (!$logincheck) {echo 'incorrect email or password';}?><br/>
+        <?php if ($_SERVER['REQUEST_METHOD'] == 'POST' && $logincheck == false) {echo 'incorrect email or password';}?><br/>
         <div class="form-group">
             <input class="btn btn-primary btn-block nomargin" type="submit" value="login"/>
         </div>
