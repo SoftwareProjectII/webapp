@@ -10,35 +10,36 @@ class Service
 {
 
     //get data form dataservice
-    //returns FALSE when empty object is retrieved (no data or wrong query)
     //returns data as php array
+    //TODO: error handling
     public static function get($location) {
         $url = "10.3.50.22/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         $jsonstring = curl_exec($ch);
 
-        //catch request error
-        if ($jsonstring === false) {
-            $info = curl_getinfo($ch);
-            curl_close($ch);
-            die('Error making get request. More info:' . var_export($info));
-        }
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
 
         curl_close($ch);
 
-        //catch data not found
-        if ($jsonstring === "") {
+        //catch request error
+        if ($jsonstring === false || $jsonstring == "") {
             return false;
         }
 
         $result = json_decode($jsonstring, true);
 
         if ($result == false || $result == NULL) {
-            die('error: json_decode = false or null' .var_dump($jsonstring));
+            return false;
         }
 
-        return $result;
+        if ($httpcode == 200 || $httpcode == 201 || $httpcode == 204) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     public static function post($location, $curl_post_data) {
@@ -49,33 +50,30 @@ class Service
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         $jsonstring = curl_exec($ch);
 
-        //TODO: catch http-codes
-        $info = curl_getinfo($ch);
-        //201: created, 409: conflict, 500: internal server error (bad data), 404: not found
-
-        //catch request error
-        if ($jsonstring === false) {
-            $info = curl_getinfo($ch);
-            curl_close($ch);
-            die('Error making post request. More info:' . var_export($info));
-        }
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
 
         curl_close($ch);
 
-        //catch data not found
-        if ($jsonstring === "") {
-            return $info["http_code"];
+        //catch request error
+        if ($jsonstring === false || $jsonstring == "") {
+            return false;
         }
 
         $result = json_decode($jsonstring, true);
 
         if ($result == false || $result == NULL) {
-            die('error: json_decode = false or null' .var_dump($jsonstring));
+            return false;
         }
 
-        return $result;
+        if ($httpcode == 200 || $httpcode == 201 || $httpcode == 204) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     public static function put($location, $curl_put_data) {
@@ -86,32 +84,17 @@ class Service
         curl_setopt($ch, CURLOPT_PUT, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
-        $jsonstring = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
 
-        //TODO: catch http-codes
-        $info = curl_getinfo($ch);
-        //201: created, 409: conflict, 500: internal server error (bad data), 404: not found
-
-        //catch request error
-        if ($jsonstring === false) {
-            $info = curl_getinfo($ch);
-            curl_close($ch);
-            die('Error making put request. More info:' . var_export($info));
-        }
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
 
         curl_close($ch);
 
-        //catch data not found
-        if ($jsonstring === "") {
-            return $info["http_code"];
+        if ($httpcode == 204) {
+            return true;
+        } else {
+            return false;
         }
-
-        $result = json_decode($jsonstring, true);
-
-        if ($result == false || $result == NULL) {
-            die('error: json_decode = false or null' .var_dump($jsonstring));
-        }
-
-        return $result;
     }
 }
