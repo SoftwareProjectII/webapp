@@ -6,8 +6,9 @@
  * Date: 19/11/2017
  * Time: 21:39
  */
+require_once "checksession.php";
 require_once "Service.php";
-require_once 'templates/head.php';
+require_once "templates/head.php";
 
 session_start();
 
@@ -86,8 +87,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
     $TS = Service::get("trainingsessions/loadreldata/{$_GET["trainingSessionId"]}");
     $teacher = Service::get("teachers/{$TS["teacherid"]}");
     $address = Service::get("addresses/{$TS["addressid"]}");
-    $faq = Service::get("traininginfos/{$TS["traininginfo"]["trainingid"]}");
-    //TODO: display faq?
+
     var_dump($TS, $teacher, $address, $faq);
 } else {
     ?>

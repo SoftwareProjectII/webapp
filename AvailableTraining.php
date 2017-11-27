@@ -5,20 +5,21 @@
  * Date: 16/11/2017
  * Time: 19:08
  */
+require_once "checksession.php";
 require_once "Service.php";
-require_once 'templates/head.php';
-
-session_start();
+require_once "templates/head.php";
 
 //get all trainingsessions and trainingsessions user already subscribed to
 // gebruik voor meer performantie
-//$_SESSION["allTraining"] = Service::get("trainingsessions/loadreldata");
-$_SESSION["allTrainingSessions"] = Service::get("trainingsessions");
+$_SESSION["allTrainingSessions"] = Service::get("trainingsessions/loadreldata");
+//$_SESSION["allTrainingSessions"] = Service::get("trainingsessions");
+// TODO: get followingtrainigs instad of users/userid/trainingsessions => performater?
 $_SESSION["userTrainingSessions"] = Service::get("users/44/trainingsessions");
 //$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["user"]["userId"]}/trainingsessions");
 
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
+//TODO: change $_GET to $_POST ? add sign in parameter ?
 if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
     $curl_post_data = [
         "userid" => $_SESSION["user"]["userId"],
@@ -78,8 +79,8 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
                                     <td>
                                         <h3> <?=
                                             // gebruik voor meer performantie
-                                            // $value["training"]["name"];
-                                            Service::get("traininginfos/{$value["trainingId"]}")['name'];
+                                            $value["training"]["name"];
+                                            //Service::get("traininginfos/{$value["trainingId"]}")['name'];
                                             ?>
                                         </h3>
                                     </td>
