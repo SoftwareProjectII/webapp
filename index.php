@@ -5,32 +5,36 @@
     session_start();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $username = $_POST["username"];
-        $password = $_POST["password"];
+        $token = false;
+        $username = $_POST["username"];//NDavolio
+        $password = $_POST["password"]; //1Davolio
 
         //salt ophalen
-        $user = Service::get("users/{$username}");
-        var_dump($user);
+        $postdata = ["username" => $username];
+        $salt = Service::post("user/salt", $postdata);
 
-        $salt = $user["salt"];
-        $encsalt = base64_decode($salt);
+        if ($salt) {
+            $encsalt = base64_decode($salt);
 
-        //hash the password input by user with salt from user object (got from dataservice)
-        $hashedpass = hash_pbkdf2( "SHA1", $password, $encsalt, 1000, 32,true);
-        $encodedhash = base64_encode($hashedpass);
+            //hash the password input by user with salt from user object (got from dataservice)
+            $hashedpass = hash_pbkdf2( "SHA1", $password, $encsalt, 1000, 32,true);
+            $encodedhash = base64_encode($hashedpass);
 
-        //TODO: check hash with database
-        $postdata = ["username" => $username, "password" => $encodedhash];
-        $logincheck = Service::post("users/login", $postdata); // 401: foute credentials, 200: OK, 400: foute variabelen
-
-        if($logincheck) {
-            $_SESSION[$user] = $user;
+            //get token with correct credentials
+            $postdata = ["username" => $username, "password" => $encodedhash];
+            $login = Service::post("token/login", $postdata); // 401: foute credentials, 200: OK, 400: foute variabelen
+        }
+        // TODO: testing databse response and succesful $_session
+        if($login) {
+            $_SESSION["token"] = $login["token"];
+            $_SESSION["userid"] = $login["userid"];
             header("location: AvailableTraining.php");
             exit();
         }
     }
 ?>
 <body>
+
 <div class="login-clean">
     <form method="POST">
         <h2 class="sr-only">Login Form</h2>
@@ -41,7 +45,7 @@
         <div class="form-group">
             <input class="form-control" type="password" name="password" placeholder="Password" required> <!-- TODO: hash password in javascrypt?-->
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD'] == 'POST' && $logincheck == false) {echo 'incorrect email or password';}?><br/>
+        <?php var_dump($token); if ($_SERVER['REQUEST_METHOD'] == 'POST' && $login == false) {echo 'incorrect email or password';}?><br/>
         <div class="form-group">
             <input class="btn btn-primary btn-block nomargin" type="submit" value="login"/>
         </div>

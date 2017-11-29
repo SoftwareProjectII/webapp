@@ -14,34 +14,34 @@ session_start();
 
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"]) && isset($_GET["signin"])) {
+if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["signin"])) {
     $curl_post_data = [
-        "userid" => $_SESSION["user"]["userId"],
+        "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_GET["trainingSessionId"],
         "isapproved" => false,
         "iscancelled" => false
     ];
 
-    if (Service::get("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}")) {
-        Service::put("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}", $curl_post_data);
+    if (Service::get("followingtrainings/{$_SESSION["userId"]}/{$_GET["trainingSessionId"]}")) {
+        Service::put("followingtrainings/{$_SESSION["userId"]}/{$_GET["trainingSessionId"]}", $curl_post_data);
     } else {
         Service::post("followingtrainings", $curl_post_data);
     }
 
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"]) && isset($_GET["cancelsignin"])) {
+if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["cancelsignin"])) {
     $curl_put_data = [
-        "userid" => $_SESSION["user"]["userId"],
+        "userid" => $_SESSION["userid"],
         "trainingsessionid" => $_GET["trainingSessionId"],
         "isapproved" => false,
         "iscancelled" => true
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings/{$_SESSION["userid"]}/{$_GET["trainingSessionId"]}", $curl_put_data);
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"]) && isset($_GET["signout"])) {
+if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["signout"])) {
     $curl_put_data = [
         "userid" => $_SESSION["user"]["userId"],
         "trainingsessionid" => $_GET["trainingSessionId"],
@@ -52,7 +52,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"]) && i
     Service::put("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}", $curl_put_data);
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"]) && isset($_GET["cancelsignout"])) {
+if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["cancelsignout"])) {
     $curl_put_data = [
         "userid" => $_SESSION["user"]["userId"],
         "trainingsessionid" => $_GET["trainingSessionId"],
@@ -79,11 +79,11 @@ function checkForId($TSId, $array) {
     }
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
+if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
     // get all data to show
     //TODO: get followingtraining object for user in $status if exists. API still under construction so probably doesnt work yet
-    $status = Service::get("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}");
-    $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["user"]["userId"]}/trainingsessions");
+    $status = Service::get("followingtrainings/{$_SESSION["userid"]}/{$_GET["trainingSessionId"]}");
+    $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userid"]}/trainingsessions");
     $TS = Service::get("trainingsessions/loadreldata/{$_GET["trainingSessionId"]}");
     $teacher = Service::get("teachers/{$TS["teacherid"]}");
     $address = Service::get("addresses/{$TS["addressid"]}");

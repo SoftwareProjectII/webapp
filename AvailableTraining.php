@@ -10,20 +10,17 @@ require_once "Service.php";
 require_once "templates/head.php";
 
 //get all trainingsessions and trainingsessions user already subscribed to
-// gebruik voor meer performantie
 $_SESSION["allTrainingSessions"] = Service::get("trainingsessions/loadreldata");
-//$_SESSION["allTrainingSessions"] = Service::get("trainingsessions");
-// TODO: get followingtrainigs instad of users/userid/trainingsessions => performater?
-$_SESSION["userTrainingSessions"] = Service::get("users/44/trainingsessions");
-//$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["user"]["userId"]}/trainingsessions");
+// TODO: get followingtrainigs instead of users/userid/trainingsessions => performater?
+$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userid"]}/trainingsessions");
 
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
 //TODO: change $_GET to $_POST ? add sign in parameter ?
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
+if (isset($_POST["trainingSessionId"])) {
     $curl_post_data = [
-        "userid" => $_SESSION["user"]["userId"],
-        "trainingsessionid" => $_GET["trainingSessionId"],
+        "userid" => $_SESSION["userid"],
+        "trainingsessionid" => $_POST["trainingSessionId"],
         "isapproved" => false,
         "iscancelled" => false
     ];
@@ -115,7 +112,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["user"]["userId"])) {
                                         </form>
                                     </td>
                                     <td>
-                                        <form>
+                                        <form method="POST">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
                                             <button class="btn btn-primary"name="sign in">
                                                 Sign in
