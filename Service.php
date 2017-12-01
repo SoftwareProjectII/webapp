@@ -18,7 +18,12 @@ class Service
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         // set http header token for authorization
-        curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+        if (!isset($_SESSION["token"])) {
+            header("Location: index.php");
+            exit();
+        } else {
+            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+        }
         $jsonstring = curl_exec($ch);
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -53,7 +58,12 @@ class Service
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
         // set http header token for authorization
-        curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+        if (!isset($_SESSION["token"])) {
+            header("Location: index.php");
+            exit();
+        } else {
+            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+        }
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         $jsonstring = curl_exec($ch);
 
@@ -89,7 +99,12 @@ class Service
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
         // set http header token for authorization
-        curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+        if (!isset($_SESSION["token"])) {
+            header("Location: index.php");
+            exit();
+        } else {
+            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+        }
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
