@@ -1,8 +1,8 @@
 <?php
     require_once "Service.php";
-    require_once "templates/head.php";
 
-    session_start();
+    session_destroy();
+     //TODO: enkel wanneer login succesvol?
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $token = false;
@@ -11,27 +11,30 @@
 
         //salt ophalen
         $postdata = ["username" => $username];
-        $salt = Service::post("user/salt", $postdata);
+        $salt = Service::post("users/salt", $postdata);
 
-        if ($salt) {
+        if ($salt !== false) {
             $encsalt = base64_decode($salt);
 
             //hash the password input by user with salt from user object (got from dataservice)
-            $hashedpass = hash_pbkdf2( "SHA1", $password, $encsalt, 1000, 32,true);
+            $hashedpass = hash_pbkdf2("SHA1", $password, $encsalt, 1000, 32, true);
             $encodedhash = base64_encode($hashedpass);
 
             //get token with correct credentials
             $postdata = ["username" => $username, "password" => $encodedhash];
             $login = Service::post("token/login", $postdata); // 401: foute credentials, 200: OK, 400: foute variabelen
         }
+
         // TODO: testing databse response and succesful $_session
         if($login) {
             $_SESSION["token"] = $login["token"];
             $_SESSION["userid"] = $login["userid"];
-            header("location: AvailableTraining.php");
+            session_start();
+            header("location: availableTraining.php");
             exit();
         }
     }
+require_once "templates/head.php";
 ?>
 <body>
 
@@ -45,7 +48,7 @@
         <div class="form-group">
             <input class="form-control" type="password" name="password" placeholder="Password" required> <!-- TODO: hash password in javascrypt?-->
         </div>
-        <?php var_dump($token); if ($_SERVER['REQUEST_METHOD'] == 'POST' && $login == false) {echo 'incorrect email or password';}?><br/>
+        <?php if ($_SERVER['REQUEST_METHOD'] == 'POST' && $login == false) {echo 'incorrect email or password';}?><br/>
         <div class="form-group">
             <input class="btn btn-primary btn-block nomargin" type="submit" value="login"/>
         </div>

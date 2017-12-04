@@ -16,8 +16,8 @@ $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userid"]}/tr
 
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
-//TODO: change $_GET to $_POST ? add sign in parameter ?
-if (isset($_POST["trainingSessionId"])) {
+//TODO: test sign in = "true" or true
+if (isset($_POST["trainingSessionId"]) && $_POST["signin"] == true) {
     $curl_post_data = [
         "userid" => $_SESSION["userid"],
         "trainingsessionid" => $_POST["trainingSessionId"],
@@ -75,7 +75,7 @@ if (isset($_POST["trainingSessionId"])) {
                                 <tr class="trainingrow">
                                     <td>
                                         <h3> <?=
-                                            // gebruik voor meer performantie
+                                            // gebruik maken van $value en /loadreldata voor meer performantie (minder get requests)
                                             $value["training"]["name"];
                                             //Service::get("traininginfos/{$value["trainingId"]}")['name'];
                                             ?>
@@ -106,7 +106,7 @@ if (isset($_POST["trainingSessionId"])) {
                                     <td>
                                         <form action="trainingSessionDetail.php">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
-                                            <button class="btn btn-primary" name="sign in">
+                                            <button class="btn btn-primary" name="more info">
                                                 More info
                                             </button>
                                         </form>
@@ -114,6 +114,7 @@ if (isset($_POST["trainingSessionId"])) {
                                     <td>
                                         <form method="POST">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
+                                            <input type="hidden" name="signin" value="true"/>
                                             <button class="btn btn-primary"name="sign in">
                                                 Sign in
                                             </button>
