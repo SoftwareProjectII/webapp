@@ -1,17 +1,13 @@
 <?php
     require_once "Service.php";
 
-    session_destroy();
-     //TODO: enkel wanneer login succesvol?
-
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $token = false;
         $username = $_POST["username"];//NDavolio
         $password = $_POST["password"]; //1Davolio
 
         //salt ophalen
-        $postdata = ["username" => $username];
-        $salt = Service::post("users/salt", $postdata);
+        $salt = Service::get("users/{$username}/salt");
 
         if ($salt !== false) {
             $encsalt = base64_decode($salt);
@@ -27,9 +23,10 @@
 
         // TODO: testing databse response and succesful $_session
         if($login) {
-            $_SESSION["token"] = $login["token"];
-            $_SESSION["userid"] = $login["userid"];
             session_start();
+            $_SESSION["token"] = $login["token"];
+            $_SESSION["userId"] = $login["userid"];
+
             header("location: availableTraining.php");
             exit();
         }
