@@ -10,57 +10,55 @@ require_once "checksession.php";
 require_once "Service.php";
 require_once "templates/head.php";
 
-session_start();
-
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["signin"])) {
+if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["signin"])) {
     $curl_post_data = [
         "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_GET["trainingSessionId"],
-        "isapproved" => false,
-        "iscancelled" => false
+        "trainingsessionid" => $_POST["trainingSessionId"],
+        "isApproved" => false,
+        "isCancelled" => false
     ];
 
-    if (Service::get("followingtrainings/{$_SESSION["userId"]}/{$_GET["trainingSessionId"]}")) {
-        Service::put("followingtrainings/{$_SESSION["userId"]}/{$_GET["trainingSessionId"]}", $curl_post_data);
+    if (Service::get("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}")) {
+        Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_post_data);
     } else {
         Service::post("followingtrainings", $curl_post_data);
     }
 
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["cancelsignin"])) {
+if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["cancelsignin"])) {
     $curl_put_data = [
-        "userid" => $_SESSION["userid"],
-        "trainingsessionid" => $_GET["trainingSessionId"],
-        "isapproved" => false,
-        "iscancelled" => true
+        "userid" => $_SESSION["userId"],
+        "trainingsessionid" => $_POST["trainingSessionId"],
+        "isApproved" => false,
+        "isCancelled" => true
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["userid"]}/{$_GET["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["signout"])) {
+if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["signout"])) {
     $curl_put_data = [
-        "userid" => $_SESSION["user"]["userId"],
-        "trainingsessionid" => $_GET["trainingSessionId"],
-        "isapproved" => true,
-        "iscancelled" => true
+        "userid" => $_SESSION["userId"],
+        "trainingsessionid" => $_POST["trainingSessionId"],
+        "isApproved" => true,
+        "isCancelled" => true
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"]) && isset($_GET["cancelsignout"])) {
+if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["cancelsignout"])) {
     $curl_put_data = [
-        "userid" => $_SESSION["user"]["userId"],
-        "trainingsessionid" => $_GET["trainingSessionId"],
-        "isapproved" => true,
-        "iscancelled" => false
+        "userid" => $_SESSION["userId"],
+        "trainingsessionid" => $_POST["trainingSessionId"],
+        "isApproved" => true,
+        "isCancelled" => false
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["user"]["userId"]}/{$_GET["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
 // checkforid(int id, array to look in): returns false if no match found
@@ -79,16 +77,17 @@ function checkForId($TSId, $array) {
     }
 }
 
-if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
+if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) && isset($_SESSION["userId"])) {
+    if (isset($_GET["trainingSessionId"])) {
+        $TSId = $_GET["trainingSessionId"];
+    } else if (isset($_POST["trainingSessionId"])) {
+        $TSId = $_POST["trainingSessionId"];
+    }
     // get all data to show
     //TODO: get followingtraining object for user in $status if exists. API still under construction so probably doesnt work yet
-    $status = Service::get("followingtrainings/{$_SESSION["userid"]}/{$_GET["trainingSessionId"]}");
-    $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userid"]}/trainingsessions");
-    $TS = Service::get("trainingsessions/loadreldata/{$_GET["trainingSessionId"]}");
-    $teacher = Service::get("teachers/{$TS["teacherid"]}");
-    $address = Service::get("addresses/{$TS["addressid"]}");
-
-    var_dump($TS, $teacher, $address, $faq);
+    $status = Service::get("followingtrainings/{$_SESSION["userId"]}/{$TSId}");
+    $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
+    $TS = Service::get("trainingsessions/{$TSId}?loadrelated=true");
 } else {
     ?>
         <mark>Something went wrong!</mark>
@@ -105,11 +104,11 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                 <!-- TODO: back to where you came from (breadcrumb variable)-->
                 <a class="btn btn-primary" role="button" href="#"> <i class="icon ion-android-arrow-back"></i> BACK</a>
                 <?php
-                if($TS["cancelled"] == 1) {
+                if($TS["cancelled"] == true) {
 
-                } else if(!checkForId($TS["trainingSessionId"], $_SESSION["userTrainingSessions"]) || ($status["iscancelled"] == "true" && $status["isapproved"] =="false")) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & iscancelled on false
+                } else if(!checkForId($TS["trainingSessionId"], $_SESSION["userTrainingSessions"]) || ($status["isCancelled"] == "true" && $status["isApproved"] =="false")) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
                     ?>
-                    <form>
+                    <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="signin" value="true"/>
                         <button class="btn btn-primary float-right" name="sign in">
@@ -117,9 +116,9 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                         </button>
                     </form>
                     <?php
-                } else if ($status["iscancelled"] == "false" && $status["isapproved"] == "false") { // approved & iscancelled false (manager must approve) -> cancel button -> iscancelled on true
+                } else if ($status["isCancelled"] == "false" && $status["isApproved"] == "false") { // approved & isCancelled false (manager must approve) -> cancel button -> isCancelled on true
                     ?>
-                    <form>
+                    <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="cancelsignin" value="true"/>
                         <button class="btn btn-primary float-right" name="sign in">
@@ -127,9 +126,9 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                         </button>
                     </form>
                     <?php
-                } else if ($status["iscancelled"] == "false" && $status["isapproved"] == "true") { // approved = true, cancelled = false --> manager approved --> sign out button --> iscancelled = true
+                } else if ($status["isCancelled"] == "false" && $status["isApproved"] == "true") { // approved = true, cancelled = false --> manager approved --> sign out button --> isCancelled = true
                     ?>
-                    <form>
+                    <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="signout" value="true"/>
                         <button class="btn btn-primary float-right" name="sign out">
@@ -137,9 +136,9 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                         </button>
                     </form>
                     <?php
-                } else if ($status["iscancelled"] == "true" && $status["isapproved"] == "true") { // approved = true & iscancelled true -> signed out
+                } else if ($status["isCancelled"] == "true" && $status["isApproved"] == "true") { // approved = true & isCancelled true -> signed out
                     ?>
-                    <form>
+                    <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="cancelsignout" value="true"/>
                         <button class="btn btn-primary float-right" name="signed out" disabled>
@@ -162,7 +161,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                 <div class="trainingsinfoborder">
                     <h5>
                         <?php
-                        echo $TS["trainingsinfo"]["name"];
+                        echo $TS["training"]["name"];
                         if ($TS["cancelled"] == 1) {
                             ?>
                             <mark> Cancelled!</mark>
@@ -171,7 +170,7 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                         ?>
                     </h5>
                     <p>
-                        <?= $TS["trainingsinfo"]["infogeneral"];?>
+                        <?= $TS["training"]["infoGeneral"];?>
                     </p>
                     <h5>Date - Hour</h5>
                     <p>
@@ -189,38 +188,38 @@ if (isset($_GET["trainingSessionId"]) && isset($_SESSION["userid"])) {
                         Price:
                     </h5>
                     <p>
-                        <?= $TS["trainingsinfo"]["price"];?>
+                        <?= $TS["training"]["price"];?>
                     </p>
                     <h5>
                         Payment:
                     </h5>
                     <p>
-                        <?= $TS["trainingsinfo"]["infopayment"];?>
+                        <?= $TS["training"]["infoPayment"];?>
                     </p>
                     <h5>
                         Exam:
                     </h5>
                     <p>
-                        <?= $TS["trainingsinfo"]["infoexam"];?>
+                        <?= $TS["training"]["infoExam"];?>
                     </p>
                     <h5>
                         Teacher:
                     </h5>
                     <p>
-                        <?= $teacher["firstname"] . $teacher["lastname"] . $teacher["phonenumber"] . $teacher["email"];?>
+                        <?= $TS["teacher"]["firstName"] . $TS["teacher"]["lastName"] . $TS["teacher"]["phoneNumber"] . $TS["teacher"]["email"];?>
                     </p>
                     <h5>
                         Location:
                     </h5>
                     <p>
-                        <?= $address["locality"] . $address["streetaddress"];?>
+                        <?= $TS["address"]["locality"] . $address["streetAddress"];?>
                     </p>
                     <div class="col">
                         <iframe
                                 width="600"
                                 height="450"
                                 frameborder="0" style="border:0"
-                                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyC_MyMlEb59Fb8IBPy_0hHm4FGP4r8nYxo&amp;q=<?= urlencode($address["country"]) . "+" . urlencode($address["locality"]) . "+" . urlencode($address["streetaddress"]);
+                                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyC_MyMlEb59Fb8IBPy_0hHm4FGP4r8nYxo&amp;q=<?= urlencode($TS["address"]["country"]) . "+" . urlencode($TS["address"]["locality"]) . "+" . urlencode($TS["address"]["streetaddress"]);
                                 ?>">
                         </iframe>
                     </div>
