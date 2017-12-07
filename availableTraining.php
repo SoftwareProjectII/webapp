@@ -10,16 +10,16 @@ require_once "Service.php";
 require_once "templates/head.php";
 
 //get all trainingsessions and trainingsessions user already subscribed to
-$_SESSION["allTrainingSessions"] = Service::get("trainingsessions/loadreldata");
+$_SESSION["allTrainingSessions"] = Service::get("trainingsessions?loadrelated=true");
 // TODO: get followingtrainigs instead of users/userid/trainingsessions => performater?
-$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userid"]}/trainingsessions");
+$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
 
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
 //TODO: test sign in = "true" or true
 if (isset($_POST["trainingSessionId"]) && $_POST["signin"] == true) {
     $curl_post_data = [
-        "userid" => $_SESSION["userid"],
+        "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_POST["trainingSessionId"],
         "isapproved" => false,
         "iscancelled" => false
