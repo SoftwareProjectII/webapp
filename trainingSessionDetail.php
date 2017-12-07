@@ -102,7 +102,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
         <div class="row">
             <div class="col-md-12">
                 <!-- TODO: back to where you came from (breadcrumb variable)-->
-                <a class="btn btn-primary" role="button" href="#"> <i class="icon ion-android-arrow-back"></i> BACK</a>
+                <a class="btn btn-primary" role="button" href="<?= $_GET["breadcrumb"] ?>"> <i class="icon ion-android-arrow-back"></i> BACK</a>
                 <?php
                 if($TS["cancelled"] == true) {
 

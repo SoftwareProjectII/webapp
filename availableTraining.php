@@ -106,6 +106,7 @@ if (isset($_POST["trainingSessionId"]) && $_POST["signin"] == true) {
                                     <td>
                                         <form action="trainingSessionDetail.php">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
+                                            <input type="hidden" name="breadcrumb" value="<?= "availableTraining.php" ?>"/>
                                             <button class="btn btn-primary" name="more info">
                                                 More info
                                             </button>
