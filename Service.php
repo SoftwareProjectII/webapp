@@ -8,19 +8,19 @@
 
 class Service
 {
-
+    static $ip = "10.3.50.22";
     //get data form dataservice
     //returns data as php array
-    //TODO: error handling
     public static function get($location) {
-        $url = "10.3.50.22/api/{$location}";
+        $ip = self::$ip;
+        $url = "{$ip}/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         // set http header token for authorization
         if (!isset($_SESSION["token"])) {
-            header("Location: index.php");
-            exit();
+            /*header("Location: index.php");
+            exit();*/
         } else {
             curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
         }
@@ -50,17 +50,19 @@ class Service
     }
 
     public static function post($location, $curl_post_data) {
+        $ip = self::$ip;
         $data = json_encode($curl_post_data);
-        $url = "10.3.50.22/api/{$location}";
+        $url = "{$ip}/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
         // set http header token for authorization
+
         if (!isset($_SESSION["token"])) {
-            header("Location: index.php");
-            exit();
+            /*header("Location: index.php");
+            exit();*/
         } else {
             curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
         }
@@ -91,8 +93,9 @@ class Service
     }
 
     public static function put($location, $curl_put_data) {
+        $ip = self::$ip;
         $data = json_encode($curl_put_data);
-        $url = "10.3.50.22/api/{$location}";
+        $url = "{$ip}/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_PUT, true);
@@ -100,8 +103,8 @@ class Service
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
         // set http header token for authorization
         if (!isset($_SESSION["token"])) {
-            header("Location: index.php");
-            exit();
+            /*header("Location: index.php");
+            exit();*/
         } else {
             curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
         }
