@@ -20,8 +20,8 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "isCancelled" => false
     ];
 
-    if (Service::get("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}")) {
-        Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_post_data);
+    if (Service::get("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}")) {
+        Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_post_data);
     } else {
         Service::post("followingtrainings", $curl_post_data);
     }
@@ -36,7 +36,7 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "isCancelled" => true
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
 if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["signout"])) {
@@ -47,7 +47,7 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "isCancelled" => true
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
 if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["cancelsignout"])) {
@@ -58,7 +58,7 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "isCancelled" => false
     ];
     //TODO: url gaat combo zijn: nog te testen
-    Service::put("followingtrainings/{$_SESSION["userId"]}/{$_POST["trainingSessionId"]}", $curl_put_data);
+    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
 // checkforid(int id, array to look in): returns false if no match found
@@ -85,7 +85,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
     }
     // get all data to show
     //TODO: get followingtraining object for user in $status if exists. API still under construction so probably doesnt work yet
-    $status = Service::get("followingtrainings/{$_SESSION["userId"]}/{$TSId}");
+    $status = Service::get("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$TSId}");
     $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
     $TS = Service::get("trainingsessions/{$TSId}?loadrelated=true");
 } else {
@@ -212,7 +212,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         Location:
                     </h5>
                     <p>
-                        <?= $TS["address"]["locality"] . $address["streetAddress"];?>
+                        <?= $TS["address"]["locality"] . $TS["address"]["streetAddress"];?>
                     </p>
                     <div class="col">
                         <iframe
