@@ -106,7 +106,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                 <?php
                 if($TS["cancelled"] == true) {
 
-                } else if(!checkForId($TS["trainingSessionId"], $_SESSION["userTrainingSessions"]) || ($status["isCancelled"] == "true" && $status["isApproved"] =="false")) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
+                } else if(!checkForId($TS["trainingSessionId"], $_SESSION["userTrainingSessions"]) || ($status["isCancelled"] == true && $status["isApproved"] == false)) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -116,7 +116,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         </button>
                     </form>
                     <?php
-                } else if ($status["isCancelled"] == "false" && $status["isApproved"] == "false") { // approved & isCancelled false (manager must approve) -> cancel button -> isCancelled on true
+                } else if ($status["isCancelled"] == false && $status["isApproved"] == false) { // approved & isCancelled false (manager must approve) -> cancel button -> isCancelled on true
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -126,7 +126,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         </button>
                     </form>
                     <?php
-                } else if ($status["isCancelled"] == "false" && $status["isApproved"] == "true") { // approved = true, cancelled = false --> manager approved --> sign out button --> isCancelled = true
+                } else if ($status["isCancelled"] == false && $status["isApproved"] == true) { // approved = true, cancelled = false --> manager approved --> sign out button --> isCancelled = true
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -136,12 +136,12 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         </button>
                     </form>
                     <?php
-                } else if ($status["isCancelled"] == "true" && $status["isApproved"] == "true") { // approved = true & isCancelled true -> signed out
+                } else if ($status["isCancelled"] == true && $status["isApproved"] == true) { // approved = true & isCancelled true -> signed out
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="cancelsignout" value="true"/>
-                        <button class="btn btn-primary float-right" name="signed out" disabled>
+                        <button class="btn btn-primary float-right" name="signed out">
                             (awaiting confirmation) Cancel signed out
                         </button>
                     </form>
