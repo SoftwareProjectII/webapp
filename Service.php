@@ -11,6 +11,7 @@ class Service
     static $ip = "10.3.50.22";
     //get data form dataservice
     //returns data as php array
+    //TODO: if http code unauthorized: logout
     public static function get($location) {
         $ip = self::$ip;
         $url = "{$ip}/api/{$location}";
@@ -58,17 +59,18 @@ class Service
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
-        // set http header token for authorization
 
+        // set http header token for authorization
         if (!isset($_SESSION["token"])) {
             /*header("Location: index.php");
             exit();*/
         } else {
-            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}", 'Content-Type: application/json']);
         }
+
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         $jsonstring = curl_exec($ch);
-
+        
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
 
@@ -98,7 +100,7 @@ class Service
         $url = "{$ip}/api/{$location}";
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_PUT, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_HTTPHEADER,['Content-Type: application/json']);
         // set http header token for authorization
@@ -106,9 +108,11 @@ class Service
             /*header("Location: index.php");
             exit();*/
         } else {
-            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}"]);
+            curl_setopt($ch, CURLOPT_HTTPHEADER,["Authorization: Bearer {$_SESSION["token"]}", 'Content-Type: application/json']);
         }
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
+
+        $result = curl_exec($ch);
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
