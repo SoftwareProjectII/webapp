@@ -9,11 +9,6 @@ require_once "checksession.php";
 require_once "Service.php";
 require_once "templates/head.php";
 
-//get all trainingsessions and trainingsessions user already subscribed to
-$_SESSION["allTrainingSessions"] = Service::get("trainingsessions?loadrelated=true");
-// TODO: get followingtrainigs instead of users/userid/trainingsessions => performater?
-$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
-
 //if sign in button pushed => compile data and post to dataservice
 //TODO: change to function like in trainingsessiondetail?
 //TODO: test sign in = "true" or true
@@ -27,6 +22,11 @@ if (isset($_POST["trainingSessionId"]) && $_POST["signin"] == true) {
 
     Service::post("followingtrainings", $curl_post_data);
 }
+
+//get all trainingsessions and trainingsessions user already subscribed to
+$_SESSION["allTrainingSessions"] = Service::get("trainingsessions?loadrelated=true");
+// TODO: get followingtrainigs instead of users/userid/trainingsessions => performater?
+$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
 
 ?>
 <body>
@@ -52,6 +52,7 @@ if (isset($_POST["trainingSessionId"]) && $_POST["signin"] == true) {
 
                         // checkforid(int id, array to look in): returns false if no match found
                         // checks if user already signed in training so they don't appear in list
+                        //TODO: return true instead of $t++
                         function checkForId($TSId, $array) {
                             $t = 0;
                             foreach ($array as $key => $value) {
