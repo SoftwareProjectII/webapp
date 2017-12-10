@@ -219,7 +219,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                                 width="600"
                                 height="450"
                                 frameborder="0" style="border:0"
-                                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyC_MyMlEb59Fb8IBPy_0hHm4FGP4r8nYxo&amp;q=<?= urlencode($TS["address"]["country"]) . "+" . urlencode($TS["address"]["locality"]) . "+" . urlencode($TS["address"]["streetaddress"]);
+                                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyC_MyMlEb59Fb8IBPy_0hHm4FGP4r8nYxo&amp;q=<?= urlencode($TS["address"]["country"]) . "+" . urlencode($TS["address"]["locality"]) . "+" . urlencode($TS["address"]["streetAddress"]);
                                 ?>">
                         </iframe>
                     </div>
