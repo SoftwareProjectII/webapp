@@ -2,7 +2,6 @@
     require_once "Service.php";
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $token = false;
         $username = $_POST["username"];//NDavolio
         $password = $_POST["password"]; //1Davolio
 
