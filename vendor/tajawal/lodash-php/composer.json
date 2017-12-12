@@ -1,0 +1,35 @@
+{
+  "name": "tajawal/lodash-php",
+  "type": "library",
+  "description": "A full-on PHP manipulation utility-belt that provides support for the usual functional.",
+  "keywords": [
+    "__",
+    "lodash",
+    "bottomline",
+    "library",
+    "utility",
+    "functions"
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "phpunit/phpunit": "~5.7"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "tajawal",
+      "email": "it-admin@tajawal.com",
+      "role": "developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "files": [
+      "src/lodash.php"
+    ],
+    "psr-4": {
+      "__\\": "src/"
+    }
+  }
+}
