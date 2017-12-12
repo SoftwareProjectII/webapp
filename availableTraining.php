@@ -7,34 +7,32 @@
  */
 require_once "checksession.php";
 require_once "Service.php";
-require_once "templates/head.php";
 
 //if sign in button pushed => compile data and post to dataservice
-//TODO: change to function like in trainingsessiondetail?
-//TODO: test sign in = "true" or true
-if (isset($_POST["trainingSessionId"]) && $_POST["signin"] == true) {
+if (isset($_POST["trainingSessionId"]) && isset($_POST["signin"])) {
     $curl_post_data = [
         "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_POST["trainingSessionId"],
         "isapproved" => false,
-        "iscancelled" => false
+        "iscancelled" => false,
+        "isDeclined" => false
     ];
 
     Service::post("followingtrainings", $curl_post_data);
 }
 
 //get all trainingsessions and trainingsessions user already subscribed to
-$_SESSION["allTrainingSessions"] = Service::get("trainingsessions?loadrelated=true");
-// TODO: get followingtrainigs instead of users/userid/trainingsessions => performater?
-$_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
+$allTrainingSessions = Service::get("trainingsessions?loadrelated=true&future=true");
+$userTrainingSessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions?future=true");
 
+require_once "templates/head.php";
 ?>
 <body>
 <?php require_once 'templates/navigation.php';?>
 <div>
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div>
                     <table class="table table-responsive table-hover">
                         <thead>
@@ -69,9 +67,9 @@ $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/tr
                         }
 
                         //iterate every trainingsession
-                        foreach ($_SESSION["allTrainingSessions"] as $key => $value) {
+                        foreach ($allTrainingSessions as $key => $value) {
                             // TODO: test value cancelled
-                            if(!checkForId($value["trainingSessionId"], $_SESSION["userTrainingSessions"]) && $value["cancelled"] == 0) {
+                            if(!checkForId($value["trainingSessionId"], $userTrainingSessions) && $value["cancelled"] == 0) {
                                 ?>
                                 <tr class="trainingrow">
                                     <td>

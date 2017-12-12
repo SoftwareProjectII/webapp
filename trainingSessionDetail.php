@@ -8,16 +8,16 @@
  */
 require_once "checksession.php";
 require_once "Service.php";
-require_once "templates/head.php";
 
 //if sign in button pushed => compile data and post to dataservice
-//TODO: change to function like in trainingsessiondetail?
+
 if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["signin"])) {
     $curl_post_data = [
         "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_POST["trainingSessionId"],
         "isApproved" => false,
-        "isCancelled" => false
+        "isCancelled" => false,
+        "isDeclined" => false
     ];
 
     if (Service::get("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}")) {
@@ -33,9 +33,10 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_POST["trainingSessionId"],
         "isApproved" => false,
-        "isCancelled" => true
+        "isCancelled" => true,
+        "isDeclined" => false
     ];
-    //TODO: url gaat combo zijn: nog te testen
+
     Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
@@ -44,9 +45,10 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_POST["trainingSessionId"],
         "isApproved" => true,
-        "isCancelled" => true
+        "isCancelled" => true,
+        "isDeclined" => false
     ];
-    //TODO: url gaat combo zijn: nog te testen
+
     Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
@@ -55,9 +57,10 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
         "userid" => $_SESSION["userId"],
         "trainingsessionid" => $_POST["trainingSessionId"],
         "isApproved" => true,
-        "isCancelled" => false
+        "isCancelled" => false,
+        "isDeclined" => false
     ];
-    //TODO: url gaat combo zijn: nog te testen
+
     Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
@@ -83,10 +86,8 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
     } else if (isset($_POST["trainingSessionId"])) {
         $TSId = $_POST["trainingSessionId"];
     }
-    // get all data to show
-    //TODO: get followingtraining object for user in $status if exists. API still under construction so probably doesnt work yet
     $status = Service::get("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$TSId}");
-    $_SESSION["userTrainingSessions"] = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
+    $userTrainingSessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions");
     $TS = Service::get("trainingsessions/{$TSId}?loadrelated=true");
 } else {
     ?>
@@ -94,6 +95,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
     <?php
 }
 
+require_once "templates/head.php";
 ?>
 <body>
 <?php require_once 'templates/navigation.php';?>
@@ -101,12 +103,13 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <!-- TODO: back to where you came from (breadcrumb variable)-->
                 <a class="btn btn-primary" role="button" href="<?= $_GET["breadcrumb"] ?>"> <i class="icon ion-android-arrow-back"></i> BACK</a>
                 <?php
-                if($TS["cancelled"] == true) {
-
-                } else if(!checkForId($TS["trainingSessionId"], $_SESSION["userTrainingSessions"]) || ($status["isCancelled"] == true && $status["isApproved"] == false)) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
+                //compare trainingsession datetime with current datetime: show no sign-in/sign-out button when trainingsession has passed
+                $date = new DateTime($TS["date"]);
+                $now = new DateTime("now");
+                if($TS["cancelled"] == true || $_GET["nobutton"] || $date < $now) {
+                } else if(!checkForId($TS["trainingSessionId"], $userTrainingSessions) || ($status["isCancelled"] == true && $status["isApproved"] == false && $status["isDeclined"] == false)) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -116,7 +119,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         </button>
                     </form>
                     <?php
-                } else if ($status["isCancelled"] == false && $status["isApproved"] == false) { // approved & isCancelled false (manager must approve) -> cancel button -> isCancelled on true
+                } else if ($status["isCancelled"] == false && $status["isApproved"] == false && $status["isDeclined"] == false) { // approved & isCancelled false (manager must approve) -> cancel button -> isCancelled on true
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -126,7 +129,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         </button>
                     </form>
                     <?php
-                } else if ($status["isCancelled"] == false && $status["isApproved"] == true) { // approved = true, cancelled = false --> manager approved --> sign out button --> isCancelled = true
+                } else if ($status["isCancelled"] == false && $status["isApproved"] == true && $status["isDeclined"] == false) { // approved = true, cancelled = false --> manager approved --> sign out button --> isCancelled = true
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -136,7 +139,7 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                         </button>
                     </form>
                     <?php
-                } else if ($status["isCancelled"] == true && $status["isApproved"] == true) { // approved = true & isCancelled true -> signed out
+                } else if ($status["isCancelled"] == true && $status["isApproved"] == true && $status["isDeclined"] == false) { // approved = true & isCancelled true -> signed out
                     ?>
                     <form method="POST">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
@@ -145,6 +148,14 @@ if ((isset($_GET["trainingSessionId"]) || isset($_POST["trainingSessionId"])) &&
                             (awaiting confirmation) Cancel signed out
                         </button>
                     </form>
+                    <?php
+                } else if ($status["isCancelled"] == false && $status["isApproved"] == false && $status["isDeclined"] == true) { // approved = true & isCancelled true -> signed out
+                    ?>
+                    <mark>Your request to follow this session has been denied by your manager.</mark>
+                    <?php
+                } else if ($status["isCancelled"] == true && $status["isApproved"] == true && $status["isDeclined"] == true) { // approved = true & isCancelled true -> signed out
+                    ?>
+                    <mark>Your request to sign out has been denied by your manager.</mark>
                     <?php
                 }
                 ?>
