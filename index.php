@@ -1,6 +1,12 @@
 <?php
     require_once "Service.php";
 
+    //force https
+    if($_SERVER["HTTPS"] != "on") {
+        header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+        exit();
+    }
+    
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST["username"];//NDavolio
         $password = $_POST["password"]; //1Davolio

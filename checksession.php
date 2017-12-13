@@ -14,3 +14,9 @@ if (!isset($_SESSION["token"])) {
     header("Location: index.php");
     exit();
 }
+
+//force https
+if($_SERVER["HTTPS"] != "on") {
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+}
