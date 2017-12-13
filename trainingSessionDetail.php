@@ -239,7 +239,7 @@ require_once "templates/head.php";
         </div>
         <div class="row">
             <div class="col-md-12">
-                <a class="btn btn-primary" role="button" href="#"> <i class="icon ion-android-arrow-back"></i> BACK</a>
+                <a class="btn btn-primary" role="button" href="<?= $_GET["breadcrumb"] ?>"> <i class="icon ion-android-arrow-back"></i> BACK</a>
             </div>
         </div>
     </div>
