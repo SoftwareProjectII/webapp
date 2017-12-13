@@ -10,9 +10,10 @@ require_once "checksession.php";
 require_once "Service.php";
 
 if(isset($_POST["answers"])) {
+    $filteredanswers = array_filter($_POST["answers"]);
         $curl_post_data = [
             "userid" => $_SESSION["userId"],
-            "answers" => $_POST["answers"],
+            "answers" => $filteredanswers,
         ];
 
     $submit = Service::post("surveyanswers/answer", $curl_post_data);
@@ -72,7 +73,7 @@ require_once "templates/head.php";
                                                    echo $_POST["answers"][$value["questionId"]];
                                                };
                                            ?>"
-                                           required>
+                                    >
                                     <br/>
                                     <?php
                                 }
