@@ -8,6 +8,7 @@
 
 require_once "checksession.php";
 require_once "Service.php";
+$_SESSION["currentpage"] = "myC";
 
 if(isset($_POST["userId"]) && isset($_POST["trainingSessionId"])) {
     if (isset($_POST["accept-signin"])) {
@@ -72,7 +73,6 @@ require_once "templates/head.php";
                         </thead>
                         <tbody>
                         <?php
-
                         foreach ($requests as $key => $value) {
                             if($value["followingtraining"]["isApproved"] == false && $value["followingtraining"]["isCancelled"] == false && $value["followingtraining"]["isDeclined"] == false ||
                                 $value["followingtraining"]["isApproved"] == true && $value["followingtraining"]["isCancelled"] == true && $value["followingtraining"]["isDeclined"] == false

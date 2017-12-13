@@ -9,6 +9,7 @@
 require_once "checksession.php";
 require_once "Service.php";
 require_once 'vendor/autoload.php';
+$_SESSION["currentpage"] = "myT";
 
 $sessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions?future=false&loadrelated=true");
 
@@ -39,7 +40,7 @@ require_once "templates/head.php";
                         foreach ($sessions as $key => $value) {
                             $status = __::filter($value["followingtraining"], function($n) {
                                 return $n['userId'] == $_SESSION["userId"];
-                            });
+                            })[0];
                             //only show approved and undeclined sessions
                             if($status["isApproved"] == true && $status["isDeclined"] == false) {
                                 ?>

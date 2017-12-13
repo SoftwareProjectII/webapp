@@ -5,8 +5,10 @@
  * Date: 16/11/2017
  * Time: 19:08
  */
+
 require_once "checksession.php";
 require_once "Service.php";
+$_SESSION["currentpage"] = "availableT";
 
 //if sign in button pushed => compile data and post to dataservice
 if (isset($_POST["trainingSessionId"]) && isset($_POST["signin"])) {
@@ -82,7 +84,7 @@ require_once "templates/head.php";
                                     </td>
                                     <td>
                                         <p>
-                                            <?= Service::get("addresses/{$value["addressId"]}")['locality'] ?>
+                                            <?= $value["address"]["locality"] ?>
                                         </p>
                                     </td>
                                     <td>
