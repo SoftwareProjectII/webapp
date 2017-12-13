@@ -108,7 +108,7 @@ require_once "templates/head.php";
                 //compare trainingsession datetime with current datetime: show no sign-in/sign-out button when trainingsession has passed
                 $date = new DateTime($TS["date"]);
                 $now = new DateTime("now");
-                if($TS["cancelled"] == true || $_GET["nobutton"] || $date < $now) {
+                if($TS["cancelled"] == true || isset($_GET["nobutton"]) || $date < $now) {
                 } else if(!checkForId($TS["trainingSessionId"], $userTrainingSessions) || ($status["isCancelled"] == true && $status["isApproved"] == false && $status["isDeclined"] == false)) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
                     ?>
                     <form method="POST">

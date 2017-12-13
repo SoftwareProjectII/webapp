@@ -20,7 +20,7 @@ if (isset($_POST["trainingSessionId"]) && isset($_POST["signin"])) {
         "isDeclined" => false
     ];
 
-    Service::post("followingtrainings", $curl_post_data);
+    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_post_data);
 }
 
 $sessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions?future=true&loadrelated=true");
@@ -105,25 +105,25 @@ require_once "templates/head.php";
                                                     Signed up!
                                                 </div>
                                             <?php
-                                            } else if ($status["isApproved"] == false || $status["isCancelled"] == false && $status["isDeclined"] == false) {
+                                            } else if ($status["isApproved"] == false && $status["isCancelled"] == false && $status["isDeclined"] == false) {
                                                 ?>
                                                 <div class="alert alert-warning" role="alert">
-                                                    Awaiting sign in confirmation
+                                                    Awaiting <span class="text-success">sign in</span> confirmation
                                                 </div>
                                                 <?php
-                                            } else if ($status["isApproved"] == true || $status["isCancelled"] == true && $status["isDeclined"] == false) {
+                                            } else if ($status["isApproved"] == true && $status["isCancelled"] == true && $status["isDeclined"] == false) {
                                                 ?>
                                                 <div class="alert alert-warning" role="alert">
-                                                    Awaiting sign out confirmation
+                                                    Awaiting <span class="text-danger">sign out</span> confirmation
                                                 </div>
                                                 <?php
-                                            } else if ($status["isAccept"] == false && $status["isCancelled"] == false && $status["isDeclined"] == true) {
+                                            } else if ($status["isApproved"] == false && $status["isCancelled"] == false && $status["isDeclined"] == true) {
                                                 ?>
                                                 <div class="alert alert-danger" role="alert">
                                                     Request denied
                                                 </div>
                                                 <?php
-                                            } else if ($status["isApproved"] == false || $status["isCancelled"] == true && $status["isDeclined"] == false) {
+                                            } else if ($status["isApproved"] == false && $status["isCancelled"] == true && $status["isDeclined"] == false) {
                                                 ?>
                                                 <form method="POST">
                                                     <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
