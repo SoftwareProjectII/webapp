@@ -9,61 +9,6 @@
 require_once "checksession.php";
 require_once "Service.php";
 
-//if sign in button pushed => compile data and post to dataservice
-
-if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["signin"])) {
-    $curl_post_data = [
-        "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_POST["trainingSessionId"],
-        "isApproved" => false,
-        "isCancelled" => false,
-        "isDeclined" => false
-    ];
-
-    if (Service::get("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}")) {
-        Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_post_data);
-    } else {
-        Service::post("followingtrainings", $curl_post_data);
-    }
-
-}
-
-if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["cancelsignin"])) {
-    $curl_put_data = [
-        "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_POST["trainingSessionId"],
-        "isApproved" => false,
-        "isCancelled" => true,
-        "isDeclined" => false
-    ];
-
-    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
-}
-
-if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["signout"])) {
-    $curl_put_data = [
-        "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_POST["trainingSessionId"],
-        "isApproved" => true,
-        "isCancelled" => true,
-        "isDeclined" => false
-    ];
-
-    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
-}
-
-if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_POST["cancelsignout"])) {
-    $curl_put_data = [
-        "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_POST["trainingSessionId"],
-        "isApproved" => true,
-        "isCancelled" => false,
-        "isDeclined" => false
-    ];
-
-    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
-}
-
 // checkforid(int id, array to look in): returns false if no match found
 function checkForId($TSId, $array) {
     $t = 0;
@@ -105,15 +50,17 @@ require_once "templates/head.php";
             <div class="col-md-12">
                 <a class="btn btn-primary" role="button" href="<?= $_GET["breadcrumb"] ?>"> <i class="icon ion-android-arrow-back"></i> BACK</a>
                 <?php
+                //TODO: show alert with status? make displaystatus function?
                 //compare trainingsession datetime with current datetime: show no sign-in/sign-out button when trainingsession has passed
                 $date = new DateTime($TS["date"]);
                 $now = new DateTime("now");
                 if($TS["cancelled"] == true || isset($_GET["nobutton"]) || $date < $now) {
                 } else if(!checkForId($TS["trainingSessionId"], $userTrainingSessions) || ($status["isCancelled"] == true && $status["isApproved"] == false && $status["isDeclined"] == false)) { // not in followingtrainings -> sign in button -> in followingstrainings aproved & isCancelled on false
                     ?>
-                    <form method="POST">
+                    <form method="POST" action="handleRequest.php">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
-                        <input type="hidden" name="signin" value="true"/>
+                        <input type="hidden" name="action" value="signin"/>
+                        <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
                         <button class="btn btn-primary float-right" name="sign in">
                             Sign in
                         </button>
@@ -121,9 +68,10 @@ require_once "templates/head.php";
                     <?php
                 } else if ($status["isCancelled"] == false && $status["isApproved"] == false && $status["isDeclined"] == false) { // approved & isCancelled false (manager must approve) -> cancel button -> isCancelled on true
                     ?>
-                    <form method="POST">
+                    <form method="POST" action="handleRequest.php">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
-                        <input type="hidden" name="cancelsignin" value="true"/>
+                        <input type="hidden" name="action" value="cancelsignin"/>
+                        <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
                         <button class="btn btn-primary float-right" name="sign in">
                             (awaiting confirmation) Cancel sign in
                         </button>
@@ -131,9 +79,10 @@ require_once "templates/head.php";
                     <?php
                 } else if ($status["isCancelled"] == false && $status["isApproved"] == true && $status["isDeclined"] == false) { // approved = true, cancelled = false --> manager approved --> sign out button --> isCancelled = true
                     ?>
-                    <form method="POST">
+                    <form method="POST" action="handleRequest.php">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
-                        <input type="hidden" name="signout" value="true"/>
+                        <input type="hidden" name="action" value="signout"/>
+                        <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
                         <button class="btn btn-primary float-right" name="sign out">
                             sign out
                         </button>
@@ -141,9 +90,10 @@ require_once "templates/head.php";
                     <?php
                 } else if ($status["isCancelled"] == true && $status["isApproved"] == true && $status["isDeclined"] == false) { // approved = true & isCancelled true -> signed out
                     ?>
-                    <form method="POST">
+                    <form method="POST" action="handleRequest.php">
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
-                        <input type="hidden" name="cancelsignout" value="true"/>
+                        <input type="hidden" name="action" value="cancelsignout"/>
+                        <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
                         <button class="btn btn-primary float-right" name="signed out">
                             (awaiting confirmation) Cancel signed out
                         </button>

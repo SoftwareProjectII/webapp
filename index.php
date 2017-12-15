@@ -6,7 +6,7 @@
         header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
         exit();
     }
-    
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST["username"];//NDavolio
         $password = $_POST["password"]; //1Davolio
@@ -31,6 +31,14 @@
             session_start();
             $_SESSION["token"] = $login["token"];
             $_SESSION["userId"] = $login["userid"];
+            $user = Service::get("users/{$login["userid"]}");
+            $employee =  Service::get("employees/{$user["empId"]}");
+
+            if ($employee["reportsTo"] == null){
+                $_SESSION["hasManager"] = false;
+            } else if (is_int($employee["reportsTo"])) {
+                $_SESSION["hasManager"] = true;
+            }
 
             header("location: availableTraining.php");
             exit();

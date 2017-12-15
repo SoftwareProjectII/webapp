@@ -11,18 +11,6 @@ require_once "Service.php";
 require_once 'vendor/autoload.php';
 $_SESSION["currentpage"] = "registeredT";
 
-if (isset($_POST["trainingSessionId"]) && isset($_POST["signin"])) {
-    $curl_post_data = [
-        "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_POST["trainingSessionId"],
-        "isapproved" => false,
-        "iscancelled" => false,
-        "isDeclined" => false
-    ];
-
-    Service::put("followingtrainings?userid={$_SESSION["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_post_data);
-}
-
 $sessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions?future=true&loadrelated=true");
 
 require_once "templates/head.php";
@@ -125,9 +113,10 @@ require_once "templates/head.php";
                                                 <?php
                                             } else if ($status["isApproved"] == false && $status["isCancelled"] == true && $status["isDeclined"] == false) {
                                                 ?>
-                                                <form method="POST">
+                                                <form method="POST" action="handleRequest.php">
                                                     <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
-                                                    <input type="hidden" name="signin" value="true"/>
+                                                    <input type="hidden" name="action" value="signin"/>
+                                                    <input type="hidden" name="breadcrumb" value="registeredTraining.php"/>
                                                     <button class="btn btn-primary"name="sign in">
                                                         Sign in
                                                     </button>

@@ -10,19 +10,6 @@ require_once "checksession.php";
 require_once "Service.php";
 $_SESSION["currentpage"] = "availableT";
 
-//if sign in button pushed => compile data and post to dataservice
-if (isset($_POST["trainingSessionId"]) && isset($_POST["signin"])) {
-    $curl_post_data = [
-        "userid" => $_SESSION["userId"],
-        "trainingsessionid" => $_POST["trainingSessionId"],
-        "isapproved" => false,
-        "iscancelled" => false,
-        "isDeclined" => false
-    ];
-
-    Service::post("followingtrainings", $curl_post_data);
-}
-
 //get all trainingsessions and trainingsessions user already subscribed to
 $allTrainingSessions = Service::get("trainingsessions?loadrelated=true&future=true");
 $userTrainingSessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions?future=true");
@@ -114,9 +101,10 @@ require_once "templates/head.php";
                                         </form>
                                     </td>
                                     <td>
-                                        <form method="POST">
+                                        <form method="POST" action="handleRequest.php">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
-                                            <input type="hidden" name="signin" value="true"/>
+                                            <input type="hidden" name="action" value="signin"/>
+                                            <input type="hidden" name="breadcrumb" value="availableTraining.php"/>
                                             <button class="btn btn-primary"name="sign in">
                                                 Sign in
                                             </button>
