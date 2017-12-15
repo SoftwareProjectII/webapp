@@ -44,7 +44,6 @@ if(isset($_POST["userId"]) && isset($_POST["trainingSessionId"])) {
             "isDeclined" => true,
         ];
     }
-
     Service::put("followingtrainings?userid={$_POST["userId"]}&trainingsessionid={$_POST["trainingSessionId"]}", $curl_put_data);
 }
 
@@ -138,10 +137,10 @@ require_once "templates/head.php";
                                         <form method="POST">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["followingtraining"]["trainingSession"]["trainingSessionId"] ?>"/>
                                             <input type="hidden" name="userId" value="<?= $value["followingtraining"]["userId"] ?>"/>
-                                            <button class="btn btn-primary btn-success" name="accept-<?php if ($value["followingtraining"]["isApproved"] == false) {echo signin;} else {echo signout;}?>">
+                                            <button class="btn btn-primary btn-success" name="accept-<?php if ($value["followingtraining"]["isApproved"] == false) {echo "signin";} else {echo "signout";}?>">
                                                 Accept
                                             </button>
-                                            <button class="btn btn-primary btn-danger"name="decline-<?php if ($value["followingtraining"]["isApproved"] == false) {echo signin;} else {echo signout;}?>">
+                                            <button class="btn btn-primary btn-danger"name="decline-<?php if ($value["followingtraining"]["isApproved"] == false) {echo "signin";} else {echo "signout";}?>">
                                                 Decline
                                             </button>
                                         </form>
