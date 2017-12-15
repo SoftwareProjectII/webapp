@@ -74,7 +74,7 @@ function cancelSignIn($TSId, $userId) {
 
 function signOut($TSId, $userId, $hasManager) {
     if ($hasManager == false) {
-        $curl_post_data = [
+        $curl_put_data = [
             "userid" => $userId,
             "trainingsessionid" => $TSId,
             "isApproved" => false,
