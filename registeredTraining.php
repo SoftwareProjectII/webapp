@@ -113,14 +113,9 @@ require_once "templates/head.php";
                                                 <?php
                                             } else if ($status["isApproved"] == false && $status["isCancelled"] == true && $status["isDeclined"] == false) {
                                                 ?>
-                                                <form method="POST" action="handleRequest.php">
-                                                    <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
-                                                    <input type="hidden" name="action" value="signin"/>
-                                                    <input type="hidden" name="breadcrumb" value="registeredTraining.php"/>
-                                                    <button class="btn btn-primary"name="sign in">
-                                                        Sign in
-                                                    </button>
-                                                </form>
+                                                <div class="alert alert-danger" role="alert">
+                                                    Signed out
+                                                </div>
                                                 <?php
                                             }
                                         ?>
