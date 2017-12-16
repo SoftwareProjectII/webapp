@@ -86,15 +86,17 @@ require_once "templates/head.php";
                                         </p>
                                     </td>
                                     <td>
-                                        <p>
                                             <?php
                                             if ($value["followingtraining"]["isApproved"] == false) {
-                                                echo "sign in";
+                                                ?>
+                                                <p class="text-success">sign in</p>
+                                                <?php
                                             } else if ($value["followingtraining"]["isApproved"] == true) {
-                                                echo "sign out";
+                                                ?>
+                                                <p class="text-danger">sign out</p>
+                                                <?php
                                             };
                                             ?>
-                                        </p>
                                     </td>
                                     <td>
                                         <p>
