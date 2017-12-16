@@ -167,13 +167,20 @@ require_once "templates/head.php";
                         Teacher:
                     </h5>
                     <p>
-                        <?= $TS["teacher"]["firstName"] . $TS["teacher"]["lastName"] . $TS["teacher"]["phoneNumber"] . $TS["teacher"]["email"];?>
+                        <?= $TS["teacher"]["firstName"] . " " . $TS["teacher"]["lastName"];?>
+                        <br/>
+                        <?= $TS["teacher"]["phoneNumber"] . $TS["teacher"]["email"];?>
+                        <br/>
+                        <?= $TS["teacher"]["email"];?>
+
                     </p>
                     <h5>
                         Location:
                     </h5>
                     <p>
-                        <?= $TS["address"]["locality"] . $TS["address"]["streetAddress"];?>
+                        <?= $TS["address"]["locality"];?>
+                        <br/>
+                        <?= $TS["address"]["streetAddress"];?>
                     </p>
                     <div class="col">
                         <iframe
