@@ -169,7 +169,7 @@ require_once "templates/head.php";
                     <p>
                         <?= $TS["teacher"]["firstName"] . " " . $TS["teacher"]["lastName"];?>
                         <br/>
-                        <?= $TS["teacher"]["phoneNumber"] . $TS["teacher"]["email"];?>
+                        <?= $TS["teacher"]["phoneNumber"];?>
                         <br/>
                         <?= $TS["teacher"]["email"];?>
 
