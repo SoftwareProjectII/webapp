@@ -15,7 +15,14 @@
                         <?php
                     }
                     ?>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="logout.php">Logout </a></li>
+                    <li class="nav-item dropdown" role="presentation">
+                        <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle fa-2x " aria-hidden="true"></i></a>
+                        <div class="dropdown-menu">
+                            <a class="nav-link disabled"><?= $_SESSION["name"]?></a>
+                            <a class="nav-link" href="logout.php">Logout </a>
+                        </div>
+
+                    </li>
                 </ul>
             </div>
         </div>

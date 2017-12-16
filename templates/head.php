@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/Login-Form-Clean.css" type="text/css">
     <link rel="stylesheet" href="css/Navigation-Clean.css" type="text/css">
     <link rel="stylesheet" href="css/styles.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <!-- endbuild -->
     <!-- build:js js/main.min.js -->
     <script type="application/javascript" src="js/script.js"></script>
