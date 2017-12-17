@@ -54,7 +54,7 @@ require_once "templates/head.php";
                         <?php //for every question:
                             if (!$questions) {
                                 ?>
-                                <mark>Sorry, there was a problem getting the questions or no new questions are available.</mark>
+                                <mark>Sorry, there are no new questions are available.</mark>
                                 <?php
                             } else {
                                 foreach ($questions as $key => $value) {

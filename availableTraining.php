@@ -37,7 +37,6 @@ require_once "templates/head.php";
 
                             // checkforid(int id, array to look in): returns false if no match found
                             // checks if user already signed in training so they don't appear in list
-                            //TODO: return true instead of $t++
                             function checkForId($TSId, $array) {
                                 foreach ($array as $key => $value) {
                                     if ($TSId == $value["trainingSessionId"]) {

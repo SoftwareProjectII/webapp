@@ -62,6 +62,7 @@ class Service
 
         // set http header token for authorization
         if (!isset($_SESSION["token"])) {
+            //TODO: if token invalid, refresh?
             /*header("Location: index.php");
             exit();*/
         } else {
@@ -70,7 +71,7 @@ class Service
 
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,5);
         $jsonstring = curl_exec($ch);
-        
+
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
 

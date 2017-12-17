@@ -84,7 +84,6 @@ require_once "templates/head.php";
                                     </td>
                                     <td>
                                         <?php
-                                            //TODO: double check
                                             if ($status["isApproved"] == true && $status["isCancelled"] == false && $status["isDeclined"] == false ||
                                                 $status["isApproved"] == true && $status["isCancelled"] == true && $status["isDeclined"] == true
                                             ) {
