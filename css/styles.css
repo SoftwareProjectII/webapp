@@ -36,3 +36,31 @@ legend {
   margin:0px;
 }
 
+.mapscontainer {
+  position: relative;
+  padding-bottom: 75%;
+  height: 0;
+  overflow: hidden;
+}
+
+.mapscontainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/**
+ * overwrite tablesorter bootstrap theme
+ */
+
+.tablesorter-bootstrap:not(.table-inverse) thead:not(.thead-inverse) .tablesorter-header,
+.tablesorter-bootstrap:not(.table-inverse) tfoot th,
+.tablesorter-bootstrap:not(.table-inverse) tfoot td {
+  background-color: transparent;
+}
+
+.tablesorter-bootstrap:not(.table-inverse) .tablesorter-filter-row {
+  background-color: transparent;
+}
