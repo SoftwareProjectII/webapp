@@ -22,15 +22,15 @@ require_once "templates/head.php";
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    <table class="table table-responsive table-hover">
+                    <table id="registeredTrainingTable" class="table table-responsive table-hover tablesorter-bootstrap">
                         <thead>
                         <tr>
                             <th>Training</th>
-                            <th>City </th>
-                            <th>Date </th>
-                            <th>Hour </th>
-                            <th> </th>
-                            <th> </th>
+                            <th class="filter-select filter-exact" data-placeholder="Pick a location">Location</th>
+                            <th>Date</th>
+                            <th>Hour</th>
+                            <th class="sorter-false filter-false"> </th>
+                            <th class="filter-select filter-exact" data-placeholder="Pick a status"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -114,7 +114,7 @@ require_once "templates/head.php";
                                             } else if ($status["isApproved"] == false && $status["isCancelled"] == true && $status["isDeclined"] == false) {
                                                 ?>
                                                 <div class="alert alert-danger" role="alert">
-                                                    Signed out
+                                                    Signed out!
                                                 </div>
                                                 <?php
                                             }

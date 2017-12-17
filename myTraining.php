@@ -22,15 +22,13 @@ require_once "templates/head.php";
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    <table class="table table-responsive table-hover">
+                    <table id="availableTrainingTable" class="table table-responsive table-hover tablesorter-bootstrap">
                         <thead>
                         <tr>
                             <th>Training</th>
-                            <th>City </th>
+                            <th class="filter-select filter-exact" data-placeholder="Pick a location">Location </th>
                             <th>Date </th>
                             <th>Hour </th>
-                            <th> </th>
-                            <th> </th>
                         </tr>
                         </thead>
                         <tbody>

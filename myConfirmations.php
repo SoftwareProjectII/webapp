@@ -58,16 +58,15 @@ require_once "templates/head.php";
         <div class="row">
             <div class="col-md-12">
                 <div>
-                    <table class="table table-responsive table-hover">
+                    <table id="myConfirmationsTrainingTable" class="table table-responsive table-hover tablesorter-bootstrap">
                         <thead>
                         <tr>
                             <th>Employee</th>
-                            <th>Action</th>
+                            <th class="filter-select filter-exact" data-placeholder="Pick an action">Action</th>
                             <th>Training</th>
-                            <th>Location</th>
+                            <th class="filter-select filter-exact" data-placeholder="Pick a location">Location</th>
                             <th>Date</th>
                             <th>Hour</th>
-                            <th> </th>
                         </tr>
                         </thead>
                         <tbody>
