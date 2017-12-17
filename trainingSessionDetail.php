@@ -182,7 +182,7 @@ require_once "templates/head.php";
                         <br/>
                         <?= $TS["address"]["streetAddress"];?>
                     </p>
-                    <div class="col">
+                    <div class="col mapscontainer">
                         <iframe
                                 width="600"
                                 height="450"
