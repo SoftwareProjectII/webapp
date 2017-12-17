@@ -33,6 +33,7 @@
             $_SESSION["userId"] = $login["userid"];
             $user = Service::get("users/{$login["userid"]}");
             $employee =  Service::get("employees/{$user["empId"]}");
+            $_SESSION["name"] = $employee["firstName"] . " " . $employee["lastName"];
 
             if ($employee["reportsTo"] == null){
                 $_SESSION["hasManager"] = false;
@@ -51,7 +52,7 @@ require_once "templates/head.php";
 <div class="login-clean">
     <form method="POST">
         <h2 class="sr-only">Login Form</h2>
-        <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
+        <div class="illustration"><i class="fa fa-user-circle-o" aria-hidden="true"></i></div>
         <div class="form-group">
             <input class="form-control" type="text" name="username" placeholder="Username" required>
         </div>
