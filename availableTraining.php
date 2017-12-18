@@ -8,6 +8,11 @@
 
 require_once "checksession.php";
 require_once "Service.php";
+require_once "vendor/autoload.php";
+$sessionProvider = new EasyCSRF\NativeSessionProvider();
+$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
+$CSRFToken = $easyCSRF->generate('CSRFToken');
+
 $_SESSION["currentpage"] = "availableT";
 
 //get all trainingsessions and trainingsessions user already subscribed to
@@ -96,6 +101,7 @@ require_once "templates/head.php";
                                                 <input type="hidden" name="trainingSessionId" value="<?= $value["trainingSessionId"] ?>"/>
                                                 <input type="hidden" name="action" value="signin"/>
                                                 <input type="hidden" name="breadcrumb" value="availableTraining.php"/>
+                                                <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                                                 <button class="btn btn-primary"name="sign in">
                                                     Sign in
                                                 </button>

@@ -7,6 +7,16 @@
  */
 require_once "checksession.php";
 require_once "Service.php";
+require_once "vendor/autoload.php";
+$sessionProvider = new EasyCSRF\NativeSessionProvider();
+$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
+
+try {
+    $easyCSRF->check('CSRFToken', $_POST['CSRFToken']);
+}
+catch(Exception $e) {
+    redirect("index.php");
+}
 
 //if sign in button pushed => compile data and post to dataservice
 
@@ -25,11 +35,11 @@ if (isset($_POST["trainingSessionId"]) && isset($_SESSION["userId"]) && isset($_
             cancelSignOut($_POST["trainingSessionId"], $_SESSION["userId"]);
             break;
     }
-    redirect();
+    redirect($_POST["breadcrumb"]);
 }
 
-function redirect() {
-    header("location: {$_POST["breadcrumb"]}");
+function redirect($loc) {
+    header("location: {$loc}");
     exit();
 }
 

@@ -8,6 +8,10 @@
 
 require_once "checksession.php";
 require_once "Service.php";
+require_once "vendor/autoload.php";
+$sessionProvider = new EasyCSRF\NativeSessionProvider();
+$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
+$CSRFToken = $easyCSRF->generate('CSRFToken');
 
 if(isset($_POST["answers"])) {
     $filteredanswers = array_filter($_POST["answers"]);
@@ -51,6 +55,7 @@ require_once "templates/head.php";
             <div class="col-md-12">
                 <div class="trainingsinfoborder">
                     <form method="post">
+                        <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                         <?php //for every question:
                             if (!$questions) {
                                 ?>
