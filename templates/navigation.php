@@ -1,6 +1,15 @@
 <div>
     <nav class="navbar navbar-light navbar-expand-md navigation-clean">
-        <div class="container"><h1 class="navbar-brand" href="#">Company Name</h1>
+        <div class="container"><h1 class="navbar-brand" href="#">
+                <?php
+                $companyName = Service::get("companyinfoes/1")["companyName"];
+                if ($companyName) {
+                    echo $companyName;
+                } else {
+                    echo "Traininghub";
+                }
+                ?>
+            </h1>
             <button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
