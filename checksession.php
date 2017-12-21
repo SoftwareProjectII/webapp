@@ -8,9 +8,18 @@
 
 //starts session and checks if a user is logged in, if not: redirect to login page
 
+//force https: https://blog.flaunt7.com/force-https-php-htaccess/
+if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
+    $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    header('HTTP/1.1 301 Moved Permanently');
+    header('Location: ' . $redirect);
+    exit();
+}
+
+//secure session cookies
+session_set_cookie_params(0,"/",$_SERVER['SERVER_NAME'],true,true);
 session_start();
 
-//TODO: refresh token?
 if (!isset($_SESSION["token"])) {
     $_SESSION = array();
 
@@ -28,11 +37,5 @@ if (!isset($_SESSION["token"])) {
     session_destroy();
 
     header("Location: index.php");
-    exit();
-}
-
-//force https
-if($_SERVER["HTTPS"] != "on") {
-    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
     exit();
 }

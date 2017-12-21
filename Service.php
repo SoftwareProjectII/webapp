@@ -11,7 +11,6 @@ class Service
     static $ip = "10.3.50.22";
     //get data form dataservice
     //returns data as php array
-    //TODO: if http code unauthorized: logout
     public static function get($location) {
         $ip = self::$ip;
         $url = "{$ip}/api/{$location}";
@@ -64,7 +63,6 @@ class Service
 
         // set http header token for authorization
         if (!isset($_SESSION["token"])) {
-            //TODO: if token invalid, refresh?
             /*header("Location: index.php");
             exit();*/
         } else {

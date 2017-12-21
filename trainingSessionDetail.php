@@ -180,7 +180,6 @@ require_once "templates/head.php";
                         <?= $TS["teacher"]["phoneNumber"];?>
                         <br/>
                         <?= $TS["teacher"]["email"];?>
-
                     </p>
                     <h5>
                         Location:
