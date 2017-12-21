@@ -1,5 +1,6 @@
 {
   "require": {
-    "tajawal/lodash-php": "*"
+    "tajawal/lodash-php": "*",
+    "gilbitron/easycsrf": "~1.0"
   }
 }

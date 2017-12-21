@@ -11,7 +11,6 @@ class Service
     static $ip = "10.3.50.22";
     //get data form dataservice
     //returns data as php array
-    //TODO: if http code unauthorized: logout
     public static function get($location) {
         $ip = self::$ip;
         $url = "{$ip}/api/{$location}";
@@ -29,6 +28,8 @@ class Service
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
+
+        self::check401($httpcode);
 
         curl_close($ch);
 
@@ -62,7 +63,6 @@ class Service
 
         // set http header token for authorization
         if (!isset($_SESSION["token"])) {
-            //TODO: if token invalid, refresh?
             /*header("Location: index.php");
             exit();*/
         } else {
@@ -74,6 +74,8 @@ class Service
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
+
+        self::check401($httpcode);
 
         curl_close($ch);
 
@@ -118,6 +120,8 @@ class Service
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //201: created, 409: conflict, 500: internal server error (bad data), 404: not found,  401: foute credentials, 200: OK, 400: foute variabelen
 
+        self::check401($httpcode);
+
         curl_close($ch);
 
         if ($httpcode == 204) {
@@ -125,5 +129,32 @@ class Service
         } else {
             return false;
         }
+    }
+
+    private static function check401($httpcode) {
+        // if token is expired: log user out so they can request new one (quick fix)
+        if ($httpcode == 401) {
+            session_start();
+            // http://php.net/manual/en/function.session-destroy.php
+            // Unset all of the session variables.
+            $_SESSION = array();
+
+            // If it's desired to kill the session, also delete the session cookie.
+            // Note: This will destroy the session, and not just the session data!
+            if (ini_get("session.use_cookies")) {
+                $params = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000,
+                    $params["path"], $params["domain"],
+                    $params["secure"], $params["httponly"]
+                );
+            }
+
+            // Finally, destroy the session.
+            session_destroy();
+
+            header("Location: index.php");
+            exit();
+        }
+        return true;
     }
 }

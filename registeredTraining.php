@@ -6,9 +6,12 @@
  * Time: 23:09
  */
 
-require_once "checksession.php";
+require_once "startSession.php";
 require_once "Service.php";
-require_once 'vendor/autoload.php';
+require_once "vendor/autoload.php";
+$sessionProvider = new EasyCSRF\NativeSessionProvider();
+$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
+$CSRFToken = $easyCSRF->generate('CSRFToken');
 $_SESSION["currentpage"] = "registeredT";
 
 $sessions = Service::get("users/{$_SESSION["userId"]}/trainingsessions?future=true&loadrelated=true");

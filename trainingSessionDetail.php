@@ -6,8 +6,12 @@
  * Date: 19/11/2017
  * Time: 21:39
  */
-require_once "checksession.php";
+require_once "startSession.php";
 require_once "Service.php";
+require_once "vendor/autoload.php";
+$sessionProvider = new EasyCSRF\NativeSessionProvider();
+$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
+$CSRFToken = $easyCSRF->generate('CSRFToken');
 
 // checkforid(int id, array to look in): returns false if no match found
 function checkForId($TSId, $array) {
@@ -61,6 +65,7 @@ require_once "templates/head.php";
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="action" value="signin"/>
                         <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
+                        <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                         <button class="btn btn-primary float-right" name="sign in">
                             Sign in
                         </button>
@@ -72,6 +77,7 @@ require_once "templates/head.php";
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="action" value="cancelsignin"/>
                         <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
+                        <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                         <button class="btn btn-primary float-right" name="sign in">
                             (awaiting confirmation) Cancel sign in
                         </button>
@@ -83,6 +89,7 @@ require_once "templates/head.php";
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="action" value="signout"/>
                         <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
+                        <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                         <button class="btn btn-primary float-right" name="sign out">
                             sign out
                         </button>
@@ -94,6 +101,7 @@ require_once "templates/head.php";
                         <input type="hidden" name="trainingSessionId" value="<?= $TS["trainingSessionId"] ?>"/>
                         <input type="hidden" name="action" value="cancelsignout"/>
                         <input type="hidden" name="breadcrumb" value="trainingSessionDetail.php?trainingSessionId=<?= $TS["trainingSessionId"];?>&breadcrumb=<?= $_GET["breadcrumb"];?>"/>
+                        <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                         <button class="btn btn-primary float-right" name="signed out">
                             (awaiting confirmation) Cancel signed out
                         </button>
@@ -172,7 +180,6 @@ require_once "templates/head.php";
                         <?= $TS["teacher"]["phoneNumber"];?>
                         <br/>
                         <?= $TS["teacher"]["email"];?>
-
                     </p>
                     <h5>
                         Location:

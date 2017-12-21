@@ -28,6 +28,10 @@ class ComposerStaticInitd69712223f9a6291e484b9a9cdb3e813
         array (
             'Symfony\\Component\\Yaml\\' => 23,
         ),
+        'E' => 
+        array (
+            'EasyCSRF\\' => 9,
+        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
@@ -53,6 +57,10 @@ class ComposerStaticInitd69712223f9a6291e484b9a9cdb3e813
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'EasyCSRF\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/gilbitron/easycsrf/src',
         ),
         'Doctrine\\Instantiator\\' => 
         array (

@@ -3,6 +3,7 @@
 <head>
     <title></title>
     <meta charset="utf-8">
+    <!-- TODO: minify and bundle-->
     <!-- build:css css/style.min.css -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/theme.bootstrap_4.css" type="text/css">

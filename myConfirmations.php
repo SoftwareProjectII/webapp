@@ -6,8 +6,13 @@
  * Time: 21:38
  */
 
-require_once "checksession.php";
+require_once "startSession.php";
 require_once "Service.php";
+require_once "vendor/autoload.php";
+$sessionProvider = new EasyCSRF\NativeSessionProvider();
+$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
+$CSRFToken = $easyCSRF->generate('CSRFToken');
+
 $_SESSION["currentpage"] = "myC";
 
 if(isset($_POST["userId"]) && isset($_POST["trainingSessionId"])) {
@@ -138,6 +143,7 @@ require_once "templates/head.php";
                                         <form method="POST">
                                             <input type="hidden" name="trainingSessionId" value="<?= $value["followingtraining"]["trainingSession"]["trainingSessionId"] ?>"/>
                                             <input type="hidden" name="userId" value="<?= $value["followingtraining"]["userId"] ?>"/>
+                                            <input type="hidden" name="CSRFToken" value="<?php echo $CSRFToken;?>">
                                             <button class="btn btn-primary btn-success" name="accept-<?php if ($value["followingtraining"]["isApproved"] == false) {echo "signin";} else {echo "signout";}?>">
                                                 Accept
                                             </button>
