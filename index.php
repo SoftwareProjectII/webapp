@@ -29,9 +29,11 @@
         }
 
         if($login) {
-            session_set_cookie_params ( 0, "/", $_SERVER['SERVER_NAME'], true,true);
+            require_once "iniSettings.php";
+            session_set_cookie_params ( 0, "/", $_SERVER['SERVER_NAME'], true,true); //secure cookies
             session_start();
-            session_regenerate_id();
+            session_regenerate_id(true); //regenerate id on login
+            $_SESSION['timeout'] = time();
             $_SESSION["token"] = $login["token"];
             $_SESSION["userId"] = $login["userid"];
             $user = Service::get("users/{$login["userid"]}");

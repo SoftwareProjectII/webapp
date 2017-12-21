@@ -6,7 +6,7 @@
  * Date: 19/11/2017
  * Time: 21:39
  */
-require_once "checksession.php";
+require_once "startSession.php";
 require_once "Service.php";
 require_once "vendor/autoload.php";
 $sessionProvider = new EasyCSRF\NativeSessionProvider();

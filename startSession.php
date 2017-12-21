@@ -5,6 +5,7 @@
  * Date: 26/11/2017
  * Time: 22:25
  */
+require_once "iniSettings.php";
 
 //starts session and checks if a user is logged in, if not: redirect to login page
 
@@ -20,6 +21,19 @@ if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
 session_set_cookie_params(0,"/",$_SERVER['SERVER_NAME'],true,true);
 session_start();
 
+//regenerate id every 3 minutes against session fixation attacks
+//https://paragonie.com/blog/2015/04/fast-track-safe-and-secure-php-sessions
+if (!isset($_SESSION['canary'])) {
+    session_regenerate_id(true);
+    $_SESSION['canary'] = time();
+}
+
+if ($_SESSION['canary'] < time() - 180) {
+    session_regenerate_id(true);
+    $_SESSION['canary'] = time();
+}
+
+//log user out if no token present
 if (!isset($_SESSION["token"])) {
     $_SESSION = array();
 
